@@ -10,6 +10,7 @@ class TodoModel {
   final String category;
   final String dateTask;
   final String timeTask;
+  final bool isDone;
 
   TodoModel({
     this.docID,
@@ -18,6 +19,7 @@ class TodoModel {
     required this.category,
     required this.dateTask,
     required this.timeTask,
+    required this.isDone,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class TodoModel {
       'category': category,
       'dateTask': dateTask,
       'timeTask': timeTask,
+      'isDone' : isDone,
     };
   }
 
@@ -39,16 +42,18 @@ class TodoModel {
       category: map['category'] as String,
       dateTask: map['dateTask'] as String,
       timeTask: map['timeTask'] as String,
+      isDone: map['isDone'] as bool,
     );
   }
 
   factory TodoModel.fromSnapShot(DocumentSnapshot<Map<String, dynamic>> doc) {
     return TodoModel(
-      docID:  doc.id,
+        docID: doc.id,
         titleTask: doc['titleTask'],
         description: doc['description'],
         category: doc['category'],
         dateTask: doc['dateTask'],
-        timeTask: doc['timeTask']);
+        timeTask: doc['timeTask'],
+        isDone: doc['isDone']);
   }
 }

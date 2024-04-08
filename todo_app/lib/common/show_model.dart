@@ -1,28 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_app/constants/app_style.dart';
 import 'package:todo_app/model/todo_model.dart';
 import 'package:todo_app/provider/date_time_provider.dart';
 import 'package:todo_app/provider/radio_provider.dart';
 import 'package:todo_app/provider/service_provider.dart';
-//import 'package:todo_app/provider/radio_provider.dart';
 import 'package:todo_app/widget/date_time_widget.dart';
 import 'package:todo_app/widget/radio_widget.dart';
 import 'package:todo_app/widget/textfield_widget.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class AddNewTaskModel extends ConsumerWidget {
+class AddNewTaskModel extends HookConsumerWidget {
   AddNewTaskModel({
     super.key,
   });
 
-  final titleController = TextEditingController();
-  final descriptionController = TextEditingController();
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final titleController = useTextEditingController();
+    final descriptionController = useTextEditingController();
     final dateProv = ref.watch(dateProvider);
 
     return Container(
@@ -56,6 +55,7 @@ class AddNewTaskModel extends ConsumerWidget {
           TextFieldWidget(
             hintText: 'Add Task Name',
             maxLine: 1,
+            //initialValue: 'Initial Task Name',
             txtController: titleController,
           ),
           const Gap(12),
@@ -65,6 +65,7 @@ class AddNewTaskModel extends ConsumerWidget {
             hintText: 'Add Descriptions',
             maxLine: 5,
             txtController: descriptionController,
+            //  txtController: descriptionController,
           ),
           const Gap(12),
           const Text('Category', style: AppStyle.headingOne),
@@ -160,7 +161,7 @@ class AddNewTaskModel extends ConsumerWidget {
                     Navigator.pop(context);
                   },
                   child: const Text(
-                    'Cancle',
+                    'Cancel',
                   ),
                 ),
               ),
@@ -199,8 +200,14 @@ class AddNewTaskModel extends ConsumerWidget {
                             category: category,
                             dateTask: ref.read(dateProvider),
                             timeTask: ref.read(timeProvider),
+                            isDone: false,
                           ),
                         );
+                    titleController.clear();
+                    descriptionController.clear();
+                    ref.read(radioProvider.notifier).update((state) => 0);
+                    Navigator.pop(context);
+
                   },
                   child: const Text(
                     'Create',
